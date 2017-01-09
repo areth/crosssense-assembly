@@ -1,0 +1,6 @@
+[submodule "crosssense"]
+	path = crosssense
+	url = https://github.com/areth/crosssense
+[submodule "crosssense-lserver"]
+	path = crosssense-lserver
+	url = https://github.com/areth/crosssense-lserver
