@@ -1,0 +1,16 @@
+version: '2'
+services:
+  app:
+    build: ./crosssense
+    image: areth/crosssense
+    ports:
+      - "3000"
+    command: test
+    environment:
+      - MONGODB_URI_DEV
+      - MONGODB_URI_TEST
+
+  lserver:
+    build: ./crosssense-lserver
+    image: areth/crosssense-lserver
+    command: test
