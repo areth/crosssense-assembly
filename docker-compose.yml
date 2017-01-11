@@ -7,10 +7,19 @@ services:
       - "3000"
     command: test
     environment:
-      - MONGODB_URI_DEV
-      - MONGODB_URI_TEST
+      - MONGODB_URI_DEV=mongodb://db/crosssense-dev
+      - MONGODB_URI_TEST=mongodb://db/crosssense-test
+    links:
+      - db
 
   lserver:
     build: ./crosssense-lserver
     image: areth/crosssense-lserver
     command: test
+    links:
+      - db
+
+  db:
+    image: mongo
+    expose:
+      - "27017"
