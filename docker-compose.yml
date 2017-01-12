@@ -2,10 +2,9 @@ version: '2'
 services:
   app:
     build: ./crosssense
-    image: areth/crosssense
+    image: areth/crosssense:latest
     ports:
       - "3000"
-    command: test
     environment:
       - MONGODB_URI_DEV=mongodb://db/crosssense-dev
       - MONGODB_URI_TEST=mongodb://db/crosssense-test
@@ -14,8 +13,7 @@ services:
 
   lserver:
     build: ./crosssense-lserver
-    image: areth/crosssense-lserver
-    command: test
+    image: areth/crosssense-lserver:latest
     links:
       - db
 

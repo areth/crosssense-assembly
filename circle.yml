@@ -1,0 +1,49 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  pre:
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    - pip install docker-compose
+
+  override:
+    #- docker pull areth/crosssense:latest || true
+    #- docker pull areth/crosssense-lserver:latest || true
+    - docker-compose pull || true
+
+checkout:
+  post:
+    - git submodule sync
+    - git submodule update --init
+
+test:
+  override:
+    #- docker run -e "MONGODB_URI_TEST=mongodb://areth-crosssense-tsa:sa58565254@ds143588.mlab.com:43588/crosssense-test" areth/crosssense:$CIRCLE_SHA1 test
+    #- docker build -t areth/crosssense:latest .
+    - docker-compose build
+    # push images one-by-one while 'docker-compose push' works only with bundles
+    - docker push areth/crosssense:latest
+    - docker push areth/crosssense-lserver:latest
+    #- >
+    #  docker run 
+    #  --add-host db:$(ip addr show docker0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1) 
+    #  -e "MONGODB_URI_TEST=db:27017" 
+    #  areth/crosssense:latest test
+    #- >
+    #  docker run 
+    #  --add-host db:$(ip addr show docker0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1) 
+    #  -e "MONGODB_URI_TEST=db:27017" 
+    #  areth/crosssense-lserver:latest test
+    - docker-compose run app test
+    - docker-compose run lserver test
+  #post:
+    # - docker run -d -p 3000:3000 -e "SECRET_KEY_BASE=abcd1234" areth/crosssense:$CIRCLE_SHA1; sleep 10
+    # - curl --retry 10 --retry-delay 5 -v http://localhost:3000
+
+# deployment:
+#   elasticbeanstalk:
+#     branch: master
+#     commands:
+#       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+#       - ./deploy.sh $CIRCLE_SHA1
