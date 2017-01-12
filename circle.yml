@@ -1,4 +1,7 @@
 machine:
+  pre:
+    - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
+
   services:
     - docker
 
@@ -19,7 +22,6 @@ checkout:
 
 test:
   override:
-    #- docker run -e "MONGODB_URI_TEST=mongodb://areth-crosssense-tsa:sa58565254@ds143588.mlab.com:43588/crosssense-test" areth/crosssense:$CIRCLE_SHA1 test
     #- docker build -t areth/crosssense:latest .
     - docker-compose build
     # push images one-by-one while 'docker-compose push' works only with bundles
